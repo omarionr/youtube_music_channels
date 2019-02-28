@@ -1,5 +1,33 @@
 # -*- coding:utf8 -*-
 import youtube_web_model
+import multiprocessing
+
+
+def write_music_channel(line):
+    write_line = line
+    line = line.strip()
+    item_list = line.split(";", 3)
+    channel_id, fans_count, country_code, channel_title = item_list
+    channel_id = channel_id.strip()
+    video_ids = youtube_web_model.get_videos_by_channel(channel_id)
+    if video_ids:
+        video_id = video_ids[0]
+        genre = youtube_web_model.get_video_genre(video_id)
+        if genre == "Music":
+            print item_list
+            write_file = open("rank_out.txt", "a")
+            write_file.write(write_line)
+            write_file.close()
+
+
+def main():
+    process_num = 8
+    pool = multiprocessing.Pool(processes=process_num)
+    with open("channel_ids.txt") as f:
+        for line in f.readlines():
+            pool.apply_async(write_music_channel, (line,))
+    pool.close()
+    pool.join()
 
 
 def filter_channel():
@@ -29,4 +57,4 @@ def filter_channel():
 
 
 if __name__ == "__main__":
-    filter_channel()
+    main()
