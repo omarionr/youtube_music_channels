@@ -14,7 +14,6 @@ def write_music_channel(line):
         video_id = video_ids[0]
         genre = youtube_web_model.get_video_genre(video_id)
         if genre == "Music":
-            print item_list
             write_file = open("rank_out.txt", "a")
             write_file.write(write_line)
             write_file.close()
@@ -47,7 +46,6 @@ def filter_channel():
                 genre = youtube_web_model.get_video_genre(video_id)
                 if genre == "Music":
                     item = (channel_id, country_code, fans_count, channel_title)
-                    print item
                     ret_items.append(item)
     sort_items = sorted(ret_items, key=lambda d: d[1])
     write_file = open("out.txt", "w")
