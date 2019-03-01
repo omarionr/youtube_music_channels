@@ -41,6 +41,16 @@ def get_video_genre(video_id):
     return genre
 
 
+def get_video_view_count(video_id):
+    url = "https://www.youtube.com/watch?v=%s" % video_id
+    res = requests.get(url)
+    soup = BeautifulSoup(res.text)
+    genre_info_ret = soup.find_all(itemprop='interactionCount')
+    view_count = ""
+    for item in genre_info_ret:
+        view_count = item.attrs.get("content")
+    return view_count
+
+
 if __name__ == "__main__":
-    print get_video_info("jIYQfMBjjXY")
-    print get_video_genre("jIYQfMBjjXY")
+    print get_video_view_count("jIYQfMBjjXY")
