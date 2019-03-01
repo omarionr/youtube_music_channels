@@ -33,6 +33,7 @@ def get_video_info(video_id):
 def get_video_genre(video_id):
     url = "https://www.youtube.com/watch?v=%s" % video_id
     res = requests.get(url)
+    print res.text
     soup = BeautifulSoup(res.text)
     genre_info_ret = soup.find_all(itemprop='genre')
     genre = ""
