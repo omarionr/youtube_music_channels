@@ -52,5 +52,46 @@ def get_video_view_count(video_id):
     return view_count
 
 
+def get_video_title(video_id):
+    url = "https://www.youtube.com/watch?v=%s" % video_id
+    res = requests.get(url)
+    soup = BeautifulSoup(res.text)
+    title_info_ret = soup.find_all(itemprop='name')
+    title = ""
+    for item in title_info_ret:
+        title = item.attrs.get("content")
+    return title
+
+
+def sniff_channel_fans_country_title(channel_id):
+    url = "https://www.youtube.com/channel/%s/about" % channel_id
+    res = requests.get(url)
+    soup = BeautifulSoup(res.text)
+    fans_count_soup_ret = soup.find_all(class_='yt-subscription-button-subscriber-count-branded-horizontal')
+    fans_count = 0
+    country_info = ""
+    channel_title = ""
+    for item in fans_count_soup_ret:
+        fans_count = item.text.replace(",", "")
+    country_soup_ret = soup.find_all(class_='country-inline')
+
+    for item in country_soup_ret:
+        country_info = item.text.strip()
+    channel_title_soup_ret = soup.find_all(class_='qualified-channel-title-wrapper')
+
+    for item in channel_title_soup_ret:
+        channel_title = item.text
+
+    view_count_soup_ret = soup.find_all(class_='about-stat')
+    view_count = 0
+    if len(view_count_soup_ret) == 3:
+        view_count = view_count_soup_ret[1].text.split(" ")[2].replace(",", "")
+    print fans_count, country_info, channel_title, int(view_count)
+    return fans_count, country_info, channel_title, view_count
+
+
 if __name__ == "__main__":
-    print get_video_view_count("jIYQfMBjjXY")
+    # sniff_channel_fans_country_title("UCcxNwqGMkPjf-EwBxvMA1jg")
+    # print get_video_view_count("Hq2NVTdApJ8")
+    # print get_video_title("Hq2NVTdApJ8")
+    print get_video_genre("Je_ZAk1IVrs")
